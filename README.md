@@ -1,18 +1,19 @@
-```hcl
-module "plan" {
-  source = "registry.terraform.io/libre-devops/service-plan/azurerm"
+# terraform-azurerm-os-calculator
+[Heavily inspired form Terraform Azure Compute Module](https://github.com/Azure/terraform-azurerm-compute)
 
-  rg_name  = module.rg.rg_name
-  location = module.rg.rg_location
-  tags     = module.rg.rg_tags
-  
-  app_service_plan_name          = "plan-${var.short}-${var.loc}-${terraform.workspace}-01"
-  add_to_app_service_environment = false
-  
-  os_type  = "Linux"
-  sku_name = "Y1"
+Designed to be used with Libre DevOps VM modules, and will simplify the way of getting SKUs for your VM images without having to look it up.
+
+Simple pass the OS you want to the variable, and it will output the values of the publisher, offer and SKU.  All versions are latest
+
+```hcl
+module "os_calculator" {
+  source = "github.com/libre-devops/terraform-azurerm-win-os-sku-calculator"
+
+  vm_os_simple = "WindowsServer2019" // will give you WindowsServer2019 sku properties, to be used in windows-vm module
 }
 ```
+
+For a full example build, check out the [Libre DevOps Website](https://www.libredevops.org/quickstart/utils/terraform/using-lbdo-tf-modules-example.html)
 
 ## Requirements
 
@@ -20,9 +21,7 @@ No requirements.
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | n/a |
+No providers.
 
 ## Modules
 
@@ -30,32 +29,19 @@ No modules.
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [azurerm_service_plan.plan](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/service_plan) | resource |
+No resources.
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_add_to_app_service_environment"></a> [add\_to\_app\_service\_environment](#input\_add\_to\_app\_service\_environment) | Whether or not this app service plan should be added to an app service environment | `bool` | `false` | no |
-| <a name="input_app_service_environment_id"></a> [app\_service\_environment\_id](#input\_app\_service\_environment\_id) | If an ASE is used, supply the ID to it here | `string` | `""` | no |
-| <a name="input_app_service_plan_name"></a> [app\_service\_plan\_name](#input\_app\_service\_plan\_name) | The name for the App service plan | `string` | n/a | yes |
-| <a name="input_location"></a> [location](#input\_location) | Azure location. | `string` | n/a | yes |
-| <a name="input_maximum_elastic_worker_count"></a> [maximum\_elastic\_worker\_count](#input\_maximum\_elastic\_worker\_count) | If ElasticScaleEnabled app service plan is used, the max number of nodes | `number` | `null` | no |
-| <a name="input_os_type"></a> [os\_type](#input\_os\_type) | The OS type of the app service plan | `string` | n/a | yes |
-| <a name="input_per_site_scaling"></a> [per\_site\_scaling](#input\_per\_site\_scaling) | Should per site scaling be used? | `bool` | `false` | no |
-| <a name="input_rg_name"></a> [rg\_name](#input\_rg\_name) | Resource group name | `string` | n/a | yes |
-| <a name="input_sku_name"></a> [sku\_name](#input\_sku\_name) | A new SKU name | `map(string)` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | A map of the tags to use on the resources that are deployed with this module. | `map(string)` | <pre>{<br>  "source": "terraform"<br>}</pre> | no |
-| <a name="input_zone_balancing_enabled"></a> [zone\_balancing\_enabled](#input\_zone\_balancing\_enabled) | Should the ASP be zone redundant? | `bool` | `false` | no |
+| <a name="input_standard_os"></a> [standard\_os](#input\_standard\_os) | Definition of the standard OS with "SimpleName" = "publisher,offer,sku", this can have many more skus added to it | `map` | <pre>{<br>  "CISWindowsServer2012L1": "center-for-internet-security-inc,cis-windows-server-2012-r2-v2-2-1-l1,cis-ws2012-r2-l1",<br>  "CISWindowsServer2012L2": "center-for-internet-security-inc,cis-windows-server-2012-r2-v2-2-1-l2,cis-ws2012-r2-l2",<br>  "CISWindowsServer2016L1": "center-for-internet-security-inc,cis-windows-server-2016-v1-0-0-l1,cis-ws2016-l1",<br>  "CISWindowsServer2016L2": "center-for-internet-security-inc,cis-windows-server-2016-v1-0-0-l2,cis-ws2016-l2",<br>  "CISWindowsServer2019L1": "center-for-internet-security-inc,cis-windows-server-2019-v1-0-0-l1,cis-ws2019-l1",<br>  "CISWindowsServer2019L2": "center-for-internet-security-inc,cis-windows-server-2019-v1-0-0-l2,cis-ws2019-l2",<br>  "Windows10": "MicrosoftWindowsDesktop,Windows-10,win10-21h2-ent-ltsc",<br>  "Windows11": "MicrosoftWindowsDesktop,Windows-11,win11-21h2-ent",<br>  "WindowsServer2008": "MicrosoftWindowsServer,WindowsServer,2008-R2-SP1",<br>  "WindowsServer2012": "MicrosoftWindowsServer,WindowsServer,2012-Datacenter",<br>  "WindowsServer2016": "MicrosoftWindowsServer,WindowsServer,2012-Datacenter",<br>  "WindowsServer2019": "MicrosoftWindowsServer,WindowsServer,2019-Datacenter",<br>  "WindowsServer2019WithContainers": "MicrosoftWindowsServer,WindowsServer,2019-Datacenter-with-Containers",<br>  "WindowsServer2022": "MicrosoftWindowsServer,WindowsServer,2022-Datacenter",<br>  "WindowsServer2022AzureEdition": "MicrosoftWindowsServer,WindowsServer,2022-datacenter-azure-edition"<br>}</pre> | no |
+| <a name="input_vm_os_simple"></a> [vm\_os\_simple](#input\_vm\_os\_simple) | If using this module, pass one of the keys as the variable to get that image properties | `string` | `""` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_service_plan_id"></a> [service\_plan\_id](#output\_service\_plan\_id) | Id of the created App Service Plan |
-| <a name="output_service_plan_is_reserved"></a> [service\_plan\_is\_reserved](#output\_service\_plan\_is\_reserved) | If the instance is reserved |
-| <a name="output_service_plan_kind"></a> [service\_plan\_kind](#output\_service\_plan\_kind) | The kind of the plan |
-| <a name="output_service_plan_location"></a> [service\_plan\_location](#output\_service\_plan\_location) | Azure location of the created App Service Plan |
-| <a name="output_service_plan_name"></a> [service\_plan\_name](#output\_service\_plan\_name) | Name of the created App Service Plan |
+| <a name="output_calculated_value_os_offer"></a> [calculated\_value\_os\_offer](#output\_calculated\_value\_os\_offer) | Gets the offer value |
+| <a name="output_calculated_value_os_publisher"></a> [calculated\_value\_os\_publisher](#output\_calculated\_value\_os\_publisher) | Gets the offer value |
+| <a name="output_calculated_value_os_sku"></a> [calculated\_value\_os\_sku](#output\_calculated\_value\_os\_sku) | Gets the OS value |

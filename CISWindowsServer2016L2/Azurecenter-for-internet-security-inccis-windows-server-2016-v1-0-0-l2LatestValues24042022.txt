@@ -1,0 +1,3 @@
+HyperVGeneration    Location    Name
+------------------  ----------  ------
+V1                  uksouth     1.3.5

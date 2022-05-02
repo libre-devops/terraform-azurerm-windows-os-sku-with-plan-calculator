@@ -1,0 +1,6 @@
+Location    Name
+----------  -------------------------------
+uksouth     cis-ws2012-r2-l2
+uksouth     cis-ws2012-r2-l2-private0
+uksouth     cis-ws2012-r2-l2-vw-po
+uksouth     cis-ws2012-r2-l2-vw-po-jan-2022

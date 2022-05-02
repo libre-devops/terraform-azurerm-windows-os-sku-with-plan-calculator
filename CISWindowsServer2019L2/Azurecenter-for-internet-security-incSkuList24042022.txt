@@ -1,0 +1,7 @@
+Location    Name
+----------  ------------------------------------
+uksouth     cis-microsoft-ws-2019-l2-private-015
+uksouth     cis-ws2019-l2
+uksouth     cis-ws2019-l2-private0
+uksouth     cis-ws2019-l2-vw-po
+uksouth     cis-ws2019-l2-vw-po-jan-2022
